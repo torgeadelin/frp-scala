@@ -12,10 +12,10 @@ Small Implementation of FRP based on Signals (time-varying values) based on Depr
 
 ## Documentation
 
-###How?
+### How?
 When evaluating a signal-value expression we need to know which signal caller gets defined or updated by the expression. If we know who the caller is, then executing for example `sig()` => we add the caller to the observers of the `sig`.
 
-###Who's calling?
+### Who's calling?
 The simple way to to do this is to maintain a global data structure that refers to the current caller and that will update as we evaluate signals.
 
 ### Signal and Val
@@ -25,14 +25,14 @@ The simple way to to do this is to maintain a global data structure that refers 
 - hold a set with all signals that depend on themselves "list of observers". If the signal/val's value updates, then all observers must be re-evaluated
 - the main difference between Signal and Val is that Val can be updated and Signal can't
 
-###Creating a Signal
+### Creating a Signal
 
 ```scala
 val sig:Signal[Int] = new Signal(10) //initial value = 10
 println(sig()) //prints the current value of the signal
 ```
 
-###Creating a Signal
+### Creating a Signal
 
 ```scala
 val sig:Val[Int] = new Val(10) //initial value = 10
