@@ -1,6 +1,7 @@
 package frp
 import scala.util.DynamicVariable
 
+// Must read: https://stackoverflow.com/questions/39928480/how-to-implement-frp-using-implicit-parameter
 
 // Each signal maintains 
 // - its current time
