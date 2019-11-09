@@ -2,7 +2,7 @@ package frp
 
 // Similar to Thread Local in Java
 class StackableVariable[T](init: T) {
-    private var values: List[T] = List(init)
+    var values: List[T] = List(init)
 
     def value: T = values.head
 

@@ -1,4 +1,4 @@
-# frp-scala
+# frp-scala 🥦
 
 Small Implementation of FRP based on Signals (time-varying values) based on Deprecating the Observer Pattern with Scala.React by Ingo Maier and Martin Odersky
 
@@ -8,14 +8,19 @@ Small Implementation of FRP based on Signals (time-varying values) based on Depr
 2. Clone the project using `git clone`
 3. Go to the project directory `cd frp-scala`
 4. Run `sbt` in your terminal
-5. Once sbt has started type `run`
+5. Once sbt has started type `fastOptJS`
+6. Open the `index-dev.html` file in the browser.
+
+📕PS. All logs are displayed in the console inside the browser. (Right click -> inspect.)
 
 ## Documentation
 
 ### How?
+
 When evaluating a signal-value expression we need to know which signal caller gets defined or updated by the expression. If we know who the caller is, then executing for example `sig()` => we add the caller to the observers of the `sig`.
 
 ### Who's calling?
+
 The simple way to to do this is to maintain a global data structure that refers to the current caller and that will update as we evaluate signals.
 
 ### Signal and Val
@@ -58,5 +63,8 @@ val aux = reactive()
 reactive() = aux + 1
 ```
 
-### Next step?
-Let's go on the web!
+### Reactive on the Web
+
+_Updated 9th November 2019_
+
+If you open the index-dev.html in the browser you're gonna see a small textarea and a label below it. The label changes its content as you type inside the textarea. The color changes from green to red depending on the number of characters the use has typed. This is just to illustrate the change of "state" in the application.
