@@ -1,14 +1,15 @@
-// package frp
-// import scala.language.implicitConversions
-// import org.scalajs.dom
-// import org.scalajs.dom.{Element, DOMParser}
-// import scala.scalajs.js
-// import scalatags.JsDom.all._
+// // package frp
+// // import scala.language.implicitConversions
+// // import org.scalajs.dom
+// // import org.scalajs.dom.{Element, DOMParser}
+// // import scala.scalajs.js
+// // import scalatags.JsDom.all._
 
 
-// /**
-//  * A minimal binding between Scala.Rx and Scalatags and Scala-Js-Dom
-//  */
+// // /**
+// //  * A minimal binding between Scala.Rx and Scalatags and Scala-Js-Dom
+// //  */
+
 // object Framework {
 
 //   /**

@@ -28,8 +28,7 @@ class Signal[T](expr: => T) {
         //example: a() = b() + 1,  caller is b() and observes a() aka it is its dependency
         observers += caller.value
 
-        println(caller)
-        println("Signal")
+     
         //make sure the observers of b() don't contain a()
         assert(!caller.value.observers.contains(this), "Cyclic Signal definition!")
 
@@ -52,17 +51,17 @@ class Signal[T](expr: => T) {
         //evaluate
         val newValue = caller.withValue(this)(myExp()) 
 
-        println(s"this = ${this}")
-        println(s"my expr  as func =  ${myExp()}")
-        println(s"my value = ${myValue}")
-        println(s"new value = ${newValue}")
+        // println(s"this = ${this}")
+        // println(s"my expr  as func =  ${myExp()}")
+        // println(s"my value = ${myValue}")
+        // println(s"new value = ${newValue}")
 
         if (myValue != newValue) {
             myValue = newValue
             val obs = observers
             observers = Set()
             obs.foreach(_.computeValue())
-        }
+         }
     }
 }
 
