@@ -8,4 +8,7 @@ Small Implementation of FRP based on Signals (time-varying values) based on Depr
 2. Clone the project using `git clone`
 3. Go to the project directory `cd frp-scala`
 4. Run `sbt` in your terminal
-5. Once sbt has started type `run`
+5. Once sbt has started type `fastOptJS`
+6. Open the `index-dev.html` file in the browser.
+
+📕PS. All logs are displayed in the console inside the browser. (Right click -> inspect.)
