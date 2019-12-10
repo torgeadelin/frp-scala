@@ -1,24 +1,30 @@
-package bank
-import observable._
+//========================================================================================
+/*                                                                                      *
+ *                               Publish Subscribe Pattern                              *
+ *                                                                                      */
+//========================================================================================
 
-class BankAccount extends Publisher {
-    private var balance = 0
+// package bank
+// import observable._
 
-    def currentBalance: Int = balance
+// class BankAccount extends Publisher {
+//     private var balance = 0
 
-    def deposit(amount: Int): Unit = {
-        if(amount > 0) {
-            balance += amount
-            publish()
-        }
-    }
+//     def currentBalance: Int = balance
 
-    def withdraw(amount: Int): Unit = {
-        if(amount > 0 && amount <= balance) {
-            balance -= amount
-            publish()
-        } else throw new Error("Insufficient funds")
-    }
+//     def deposit(amount: Int): Unit = {
+//         if(amount > 0) {
+//             balance += amount
+//             publish()
+//         }
+//     }
+
+//     def withdraw(amount: Int): Unit = {
+//         if(amount > 0 && amount <= balance) {
+//             balance -= amount
+//             publish()
+//         } else throw new Error("Insufficient funds")
+//     }
 
    
-}
+// }

@@ -1,18 +1,24 @@
-package bank
-import observable._
+//========================================================================================
+/*                                                                                      *
+ *                               Publish Subscribe Pattern                              *
+ *                                                                                      */
+//========================================================================================
 
-class Consolidator(observed: List[BankAccount]) extends Subscriber {
-    observed.foreach(_.subscribe(this))
+// package bank
+// import observable._
 
-    //Initially is not initialized (_)
-    private var total: Int = _
-    compute()
+// class Consolidator(observed: List[BankAccount]) extends Subscriber {
+//     observed.foreach(_.subscribe(this))
 
-    private def compute() = 
-        total = observed.map(_.currentBalance).sum
+//     //Initially is not initialized (_)
+//     private var total: Int = _
+//     compute()
 
-    def handler(pub: Publisher) = compute()
+//     private def compute() = 
+//         total = observed.map(_.currentBalance).sum
+
+//     def handler(pub: Publisher) = compute()
     
-    //Accessor method
-    def totalBalance = total
- }
+//     //Accessor method
+//     def totalBalance = total
+//  }

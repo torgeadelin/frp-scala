@@ -1,5 +1,6 @@
 package frp
 import scala.util.DynamicVariable
+import util.Try
 
 // Must read: https://stackoverflow.com/questions/39928480/how-to-implement-frp-using-implicit-parameter
 
@@ -10,67 +11,78 @@ import scala.util.DynamicVariable
 
 // If the signal changes, all observers must be updated
 
-class Signal[T](expr: => T) {
-    import Signal._
+import collection.mutable
+import util.Try
+
+
+trait SignalTrait[+T] extends Flow.Emitter[T]{
+    def currentValue: T
+
+    def now: T = currentValue
+
+    def apply(): T = {
+        val current = Signal.enclosing.value
+
+        if(current != null) {
+            this.linkChild(Signal.enclosingR.value)
+            Signal.enclosing.value = current.copy(
+                level = math.max(this.level + 1, current.level),
+                parents = this +: current.parents
+            )
+        }
+        currentValue
+    }
+
+    def toTry: Try[T]
+}
+
+case class SigState[+T](
+    parents: Seq[Flow.Emitter[Any]],
+    value: Try[T],
+    level: Long
+)
+
+class Signal[+T](val name: String, calc: () => T) extends SignalTrait[T] with Flow.Reactor[Any] {
 
     // The expression of the signal
-    private var myExp: () => T = _ 
+    @volatile var active = true
+    @volatile private[this] var state: SigState[T] = fullCalc(Option(Signal.enclosing.value).map(_.level + 1).getOrElse(0))
 
-    private var myValue: T = _ 
-    
-    // Who's listening to this signal?
-    private var observers: Set[Signal[_]] = Set()
-   
-    // same as Signal(...)
-    def apply(): T = {
-       
-        //caller is the left hand side, 
-        //so we're just adding this caller as a dependent to our signal
-        //example: a() = b() + 1,  caller is b() and observes a() aka it is its dependency
-        observers += caller.value
-
-     
-        //make sure the observers of b() don't contain a()
-        assert(!caller.value.observers.contains(this), "Cyclic Signal definition!")
-
-        //return the value at this time
-        myValue
+    def fullCalc(lvl: Long = level): SigState[T] = {
+        Signal.enclosing.withValue(SigState(Nil, null, lvl)) {
+            Signal.enclosingR.withValue(this) {
+                val newValue = Try(calc())
+                Signal.enclosing.value.copy(value = newValue)
+            }
+        }
     }
-    
-    //Whenever we create a signal we update the expression
-    update(expr)
+    def ping(incoming: Seq[Flow.Emitter[Any]]) = {
+        println("ping")
+        if(active && getParents.intersect(incoming).isDefinedAt(0)) {
+            val newState = fullCalc()
 
-    //Apply the expression to myExp
-    protected def update(expr: => T): Unit = {
-        myExp = () => expr
+            val enclosingLevel: Long = Option(Signal.enclosing.value).map(_.level + 1).getOrElse(0)
+            val newLevel = math.max(newState.level, enclosingLevel)
 
-        //compute value
-        computeValue()
+            state = newState.copy(newState.parents, newState.value, newLevel)
+            getChildren
+        } else {
+            Nil
+        }
     }
 
-    protected def computeValue(): Unit = {
-        //evaluate
-        val newValue = caller.withValue(this)(myExp()) 
+    def getParents = state.parents
 
-        // println(s"this = ${this}")
-        // println(s"my expr  as func =  ${myExp()}")
-        // println(s"my value = ${myValue}")
-        // println(s"new value = ${newValue}")
+    def toTry = state.value
+    def level = state.level
+    def currentValue = state.value.get
 
-        if (myValue != newValue) {
-            myValue = newValue
-            val obs = observers
-            observers = Set()
-            obs.foreach(_.computeValue())
-         }
-    }
 }
 
-object NoSignal extends Signal[Nothing](???) { 
-    override def computeValue() = ()
-}
 
 object Signal {
-    private val caller = new DynamicVariable[Signal[_]](NoSignal)
-    def apply[T](expr: => T) = new Signal(expr)
+    val enclosing = new DynamicVariable[SigState[Any]](null)
+    val enclosingR = new DynamicVariable[Flow.Reactor[Any]](null)
+
+    def apply[T](calc: => T)(implicit name: String = ""): Signal[T] = new Signal(name, () => calc)
 }
